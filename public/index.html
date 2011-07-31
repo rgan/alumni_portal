@@ -1,0 +1,82 @@
+<head>
+    <script type="text/javascript" src="javascripts/jquery-1.6.2.min.js"></script>
+    <script type="text/javascript" src="javascripts/jquery.tmpl.js"></script>
+    <script type="text/javascript" src="javascripts/knockout-1.2.1.js"></script>
+</head>
+<body>
+<h2>Alumni Portal</h2>
+
+<div id="form">
+    <p>First name:<input data-bind="value: first_name"></span></p>
+
+    <p>Last name:<input data-bind="value: last_name"></span></p>
+
+    <p>Speciality:<input data-bind="value: specialty"></span></p>
+
+    <p>UG college:<input data-bind="value: ug_college"></span></p>
+
+    <p>PG college:<input data-bind="value: pg_college"></span></p>
+    <button data-bind="click: addAlumnus">Save</button>
+</div>
+
+<div id="search"><input id="searchText">
+    <button data-bind="click:searchAlumni">Search</button>
+
+
+    <h4>Results:</h4>
+    <table data-bind="template: { name:'alumniTemplate', foreach:alumni}">
+    </table>
+
+</div>
+
+<script id="alumniTemplate" type="text/html">
+    <tr>
+        <td>${$data.first_name}></td>
+        <td>${$data.last_name}</td>
+        <td>${$data.specialty}</td>
+        <td>${$data.ug_college}</td>
+        <td>${$data.pg_college}</td>
+    </tr>
+</script>
+
+<script type="text/javascript">
+
+    var viewModel = {
+        first_name : ko.observable(""),
+        last_name : ko.observable(""),
+        ug_college : ko.observable(""),
+        pg_college : ko.observable(""),
+        specialty : ko.observable(""),
+        addAlumnus: function() {
+            $.ajax({
+                url: "alumni.json",
+                type: "post",
+                data: ko.utils.stringifyJson({ "alumnus" : JSON.parse(ko.toJSON(this)) }), // this is needed because ko.toJS() does not seem to work
+                contentType: "application/json",
+                success: function(result) {
+                    alert(result);
+                }
+            });
+        }
+
+    };
+
+    var searchViewModel = {
+        alumni: ko.observableArray([]),
+        searchAlumni: function() {
+            $.ajax({
+                url: "/alumni/search/" + $("input[id='searchText']").val() + ".json",
+                type: "get",
+                contentType: "application/json",
+                success: function(result) {
+                    this.alumni.addAll(JSON.parse(result));
+                }
+            });
+        }
+    };
+
+    ko.applyBindings(viewModel, $("#form")[0]);
+    ko.applyBindings(searchViewModel, $("#search")[0]);
+
+</script>
+</body>

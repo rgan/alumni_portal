@@ -1,0 +1,11 @@
+Alumni portal - allows alumni to register and provides search.
+
+Javascript UI using Knockout.js with REST-like services using Rails 3, MongoDb (1.8.1), Solr
+
+rvm gemset create alumni_portal
+rvm gemset use alumni_portal
+bundle install
+start Mongo DB process: <MONGO_HOME>/bin/mongod --dbpath=
+rake sunspot:solr:start
+rails server
+Open http://localhost:3000 in a browser.
