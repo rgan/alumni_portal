@@ -4,7 +4,7 @@ gem 'rails', '3.0.9'
 gem "mongoid", "~> 2.0"
 gem "bson_ext", "~> 1.3"
 gem 'sunspot_rails', '~> 1.2.1'
-gem "sunspot_mongoid", "~> 0.4.1"
+gem 'sunspot_mongoid', "~> 0.4.1"
 gem 'system_timer', '~> 1.2.0'
 
 group :test do

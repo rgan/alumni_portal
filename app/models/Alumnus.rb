@@ -10,14 +10,14 @@ class Alumnus
 
   embeds_one :address
 
-  validates_format_of :first_name, :last_name, :ug_college, :pg_college, :specialty, :with => /[A-Za-z]/
-  validates_length_of :first_name, :last_name, :ug_college, :pg_college, :specialty, :minimum => 1, :maximum => 100
-  validates_length_of :maiden_name, :maximum => 100
-
   include Sunspot::Mongoid
   searchable do
     text :first_name #, :last_name, :maiden_name, :ug_college, :pg_college, :specialty
   end
+
+  validates_format_of :first_name, :last_name, :ug_college, :pg_college, :specialty, :with => /[A-Za-z]/
+  validates_length_of :first_name, :last_name, :ug_college, :pg_college, :specialty, :minimum => 1, :maximum => 100
+  validates_length_of :maiden_name, :maximum => 100
 
   def self.doSearch(search_text)
     @search = Alumnus.search() do

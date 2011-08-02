@@ -5,3 +5,5 @@ Feature: Search
     | John  | Doe   | Rutgers    | Penn State | Internal medicine |
     When I search using "John"
     Then I should get 1 result
+    When I search using "something else"
+    Then I should get 0 result
