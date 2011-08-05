@@ -12,7 +12,7 @@ class Alumnus
 
   include Sunspot::Mongoid
   searchable do
-    text :first_name #, :last_name, :maiden_name, :ug_college, :pg_college, :specialty
+    text :first_name, :last_name, :maiden_name, :ug_college, :pg_college, :specialty
   end
 
   validates_format_of :first_name, :last_name, :ug_college, :pg_college, :specialty, :with => /[A-Za-z]/

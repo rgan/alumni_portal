@@ -5,6 +5,7 @@ class AlumniController < ApplicationController
   # POST /alumni
   def create
     @alumnus = Alumnus.create(params[:alumnus])
+    Sunspot.commit
     respond_with(@alumnus)
   end
 
