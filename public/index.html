@@ -22,21 +22,31 @@
 <div id="search"><input id="searchText">
     <button data-bind="click:searchAlumni">Search</button>
 
-
-    <h4>Results:</h4>
-    <table data-bind="template: { name:'alumniTemplate', foreach:alumni}">
-    </table>
+    <div data-bind="template: { name:'alumniTemplate', data: alumni}">
+    </div>
 
 </div>
 
 <script id="alumniTemplate" type="text/html">
-    <tr>
-        <td>${$data.first_name}></td>
-        <td>${$data.last_name}</td>
-        <td>${$data.specialty}</td>
-        <td>${$data.ug_college}</td>
-        <td>${$data.pg_college}</td>
-    </tr>
+    <h4>Results:</h4>
+    <table width="100%">
+        <tr>
+            <td>First Name</td>
+            <td>Last Name</td>
+            <td>Specialty</td>
+            <td>UG College</td>
+            <td>PG College</td>
+        </tr>
+        {{each $data}}
+        <tr>
+            <td>${first_name}</td>
+            <td>${last_name}</td>
+            <td>${specialty}</td>
+            <td>${ug_college}</td>
+            <td>${pg_college}</td>
+        </tr>
+        {{/each}}
+    </table>
 </script>
 
 <script type="text/javascript">
@@ -54,7 +64,11 @@
                 data: ko.utils.stringifyJson({ "alumnus" : JSON.parse(ko.toJSON(this)) }), // this is needed because ko.toJS() does not seem to work
                 contentType: "application/json",
                 success: function(result) {
-                    alert(result);
+                    viewModel.first_name("");
+                    viewModel.last_name("");
+                    viewModel.ug_college("");
+                    viewModel.pg_college("");
+                    viewModel.specialty("");
                 }
             });
         }
@@ -62,17 +76,20 @@
     };
 
     var searchViewModel = {
-        alumni: ko.observableArray([]),
-        searchAlumni: function() {
-            $.ajax({
-                url: "/alumni/search/" + $("input[id='searchText']").val() + ".json",
-                type: "get",
-                contentType: "application/json",
-                success: function(result) {
-                    this.alumni.addAll(JSON.parse(result));
-                }
-            });
-        }
+        alumni: ko.observableArray([])
+    };
+
+    searchViewModel.searchAlumni = function() {
+        $.ajax({
+            url: "/alumni/search/" + $("input[id='searchText']").val() + ".json",
+            type: "get",
+            contentType: "application/json",
+            success: function(result) {
+                result.forEach(function(item) {
+                    searchViewModel.alumni.push(item);
+                });
+            }
+        });
     };
 
     ko.applyBindings(viewModel, $("#form")[0]);
