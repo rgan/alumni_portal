@@ -2,20 +2,24 @@
     <script type="text/javascript" src="javascripts/jquery-1.6.2.min.js"></script>
     <script type="text/javascript" src="javascripts/jquery.tmpl.js"></script>
     <script type="text/javascript" src="javascripts/knockout-1.2.1.js"></script>
+    <script type="text/javascript" src="javascripts/specialities.js"></script>
 </head>
 <body>
 <h2>Alumni Portal</h2>
 
 <div id="form">
-    <p>First name:<input data-bind="value: first_name"></span></p>
+    <p>First name:<input data-bind="value: model.first_name"></span></p>
 
-    <p>Last name:<input data-bind="value: last_name"></span></p>
+    <p>Last name:<input data-bind="value: model.last_name"></span></p>
 
-    <p>Speciality:<input data-bind="value: specialty"></span></p>
+    <p>UG college:<input data-bind="value: model.ug_college"></span></p>
 
-    <p>UG college:<input data-bind="value: ug_college"></span></p>
+    <p>PG college:<input data-bind="value: model.pg_college"></span></p>
 
-    <p>PG college:<input data-bind="value: pg_college"></span></p>
+    <p>Speciality:
+        <select data-bind="options:specialities, value: model.specialty"> </select>&nbsp;<span>Sub-Speciality:
+    <select height="5" data-bind="options:sub_specialities, value: model.sub_specialty"> </select></span></p>
+
     <button data-bind="click: addAlumnus">Save</button>
 </div>
 
@@ -34,6 +38,7 @@
             <td>First Name</td>
             <td>Last Name</td>
             <td>Specialty</td>
+            <td>Sub specialty</td>
             <td>UG College</td>
             <td>PG College</td>
         </tr>
@@ -42,6 +47,7 @@
             <td>${first_name}</td>
             <td>${last_name}</td>
             <td>${specialty}</td>
+            <td>${sub_specialty}</td>
             <td>${ug_college}</td>
             <td>${pg_college}</td>
         </tr>
@@ -50,36 +56,51 @@
 </script>
 
 <script type="text/javascript">
-
-    var viewModel = {
+    var alumnus = {
         first_name : ko.observable(""),
         last_name : ko.observable(""),
         ug_college : ko.observable(""),
         pg_college : ko.observable(""),
         specialty : ko.observable(""),
+        sub_specialty : ko.observable(""),
+        clear:
+                function() {
+                    this.first_name("");
+                    this.last_name("");
+                    this.ug_college("");
+                    this.pg_college("");
+                    this.specialty("");
+                }
+    }
+
+    var viewModel = {
+        model : alumnus,
         addAlumnus: function() {
             $.ajax({
                 url: "alumni.json",
                 type: "post",
-                data: ko.utils.stringifyJson({ "alumnus" : JSON.parse(ko.toJSON(this)) }), // this is needed because ko.toJS() does not seem to work
+                data: ko.utils.stringifyJson({ "alumnus" : JSON.parse(ko.toJSON(this.model)) }), // this is needed because ko.toJS() does not seem to work
                 contentType: "application/json",
                 success: function(result) {
-                    viewModel.first_name("");
-                    viewModel.last_name("");
-                    viewModel.ug_college("");
-                    viewModel.pg_college("");
-                    viewModel.specialty("");
+                    viewModel.model.clear();
                 }
             });
         }
-
     };
+
+    viewModel.specialities = ko.observableArray(getSpecialties());
+
+    viewModel.sub_specialities = ko.dependentObservable(function() {
+                return getSubSpecialities(this.model.specialty())
+            },
+            viewModel);
 
     var searchViewModel = {
         alumni: ko.observableArray([])
     };
 
     searchViewModel.searchAlumni = function() {
+        searchViewModel.alumni.removeAll()
         $.ajax({
             url: "/alumni/search/" + $("input[id='searchText']").val() + ".json",
             type: "get",
