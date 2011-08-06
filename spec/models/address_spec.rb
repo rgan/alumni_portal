@@ -8,7 +8,7 @@ describe "address" do
   end
 
   it "should be valid if all fields have values" do
-    address = Address.new  :city => "new york", :state => "new york", :country => "usa"
+    address = Address.new  :city => "new york", :country => "usa"
     address.valid?.should be_true
   end
 end

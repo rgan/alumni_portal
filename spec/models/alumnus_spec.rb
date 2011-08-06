@@ -14,6 +14,15 @@ describe Alumnus do
     alumnus.valid?.should be_true
   end
 
+  it "should not allow dynamic fields" do
+    begin
+      alumnus = Alumnus.new Alumnus.new :first_name => "f", :last_name => "l", :maiden_name => "m",
+                                        :ug_college => "ug", :pg_college => "pg", :specialty => "surgery", :foo => "bar"
+      fail()
+    rescue NoMethodError
+    end
+  end
+
   it "should not require maiden_name" do
     alumnus = Alumnus.new :first_name => "f", :last_name => "l",
                           :ug_college => "ug", :pg_college => "pg", :specialty => "surgery"

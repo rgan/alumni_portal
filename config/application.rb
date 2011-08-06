@@ -43,5 +43,8 @@ module AlumniPortal
 
     # Configure sensitive parameters which will be filtered from the log file.
     config.filter_parameters += [:password]
+    Mongoid.configure do |config|
+      config.allow_dynamic_fields = false
+    end
   end
 end

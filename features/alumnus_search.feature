@@ -7,3 +7,12 @@ Feature: Search
     Then I should get 1 result
     When I search using "something else"
     Then I should get 0 result
+
+    Scenario: Should be able to search by city in address
+    Given the following alumni exist in the system:
+    | first_name | last_name| ug_college | pg_college |specialty| city |  country |
+    | Sam  | Bah   | Rutgers    | Penn State | Internal medicine | Brunswick |  USA |
+    When I search using "Brunswick"
+    Then I should get 1 result
+    When I search using "something else"
+    Then I should get 0 result
