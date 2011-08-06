@@ -7,7 +7,8 @@ Feature: Create a new alumnus using json
 		 "last_name": "Doe",
 		 "ug_college": "CMC Vellore",
 		 "pg_college": "Loma Linda",
-		 "specialty" : "Internal medicine"
+		 "specialty" : "Internal medicine",
+		 "address":{"city":"test","country":"Aruba"}
 		}
 		"""
       Then the response JSON should contain the following key-value pairs:
@@ -17,7 +18,8 @@ Feature: Create a new alumnus using json
 		 "last_name": "Doe",
 		 "ug_college": "CMC Vellore",
 		 "pg_college": "Loma Linda",
-		 "specialty" : "Internal medicine"
+		 "specialty" : "Internal medicine",
+		 "address":{"city":"test","country":"Aruba"}
 		}
      	"""
   Scenario: Should be able to create and find new alumni

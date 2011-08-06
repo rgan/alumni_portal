@@ -28,5 +28,5 @@ def similarJsonArrays(expectedJSONArray, actualJSONArray)
 end
 
 def containsKeysWithValue(expectedJSON, actualJSON)
-  expectedJSON.select{|key, value|  value != actualJSON[key] }.size == 0
+  expectedJSON.select{|key, value|  value.is_a?(Hash) ? !containsKeysWithValue(value,actualJSON[key]) : value != actualJSON[key] }.size == 0
 end
