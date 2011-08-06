@@ -23,6 +23,13 @@ describe Alumnus do
     end
   end
 
+  it "should not be valid if all address fields are not valid" do
+    alumnus = Alumnus.new :first_name => "f", :last_name => "l", :maiden_name => "m",
+                          :ug_college => "ug", :pg_college => "pg", :specialty => "surgery"
+    alumnus.address = Address.new
+    alumnus.valid?.should be_false
+  end
+
   it "should not require maiden_name" do
     alumnus = Alumnus.new :first_name => "f", :last_name => "l",
                           :ug_college => "ug", :pg_college => "pg", :specialty => "surgery"
