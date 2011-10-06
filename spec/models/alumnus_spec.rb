@@ -9,37 +9,56 @@ describe Alumnus do
   end
 
   it "should be valid if all fields have values" do
-    alumnus = Alumnus.new :first_name => "f", :last_name => "l", :maiden_name => "m",
-                          :ug_college => "ug", :pg_college => "pg", :specialty => "surgery"
+    alumnus = FactoryGirl.build(:alumnus)
     alumnus.valid?.should be_true
   end
 
   it "should not allow dynamic fields" do
     begin
-      alumnus = Alumnus.new Alumnus.new :first_name => "f", :last_name => "l", :maiden_name => "m",
-                                        :ug_college => "ug", :pg_college => "pg", :specialty => "surgery", :foo => "bar"
-      fail()
+      alumnus = FactoryGirl.build(:alumnus)
+      alumnus.foo = "bar"
+      fail("should have thrown exception")
     rescue NoMethodError
     end
   end
 
   it "should not be valid if all address fields are not valid" do
-    alumnus = Alumnus.new :first_name => "f", :last_name => "l", :maiden_name => "m",
-                          :ug_college => "ug", :pg_college => "pg", :specialty => "surgery"
+    alumnus = FactoryGirl.build(:alumnus)
     alumnus.address = Address.new
     alumnus.valid?.should be_false
   end
 
   it "should not require maiden_name" do
-    alumnus = Alumnus.new :first_name => "f", :last_name => "l",
-                          :ug_college => "ug", :pg_college => "pg", :specialty => "surgery"
+    alumnus = FactoryGirl.build(:alumnus)
     alumnus.valid?.should be_true
   end
 
   it "should not be valid if first_name has non-alpha characters" do
-    alumnus = Alumnus.new :first_name => "1", :last_name => "l", :maiden_name => "m",
-                          :ug_college => "ug", :pg_college => "pg", :specialty => "surgery"
+    alumnus = FactoryGirl.build(:alumnus)
+    alumnus.first_name = '1'
     alumnus.valid?.should be_false
+  end
+
+  it "is_admin should return true if admin" do
+    alumnus = FactoryGirl.build(:admin)
+    alumnus.is_admin.should be_true
+  end
+
+  it "should not be admin by default" do
+    alumnus = FactoryGirl.build(:alumnus)
+    alumnus.is_admin.should be_false
+  end
+
+  it "make_admin should work" do
+    alumnus = FactoryGirl.build(:alumnus)
+    alumnus.make_admin
+    alumnus.is_admin.should be_true
+  end
+
+  it "should no longer be admin after remove_admin" do
+    alumnus = FactoryGirl.build(:admin)
+    alumnus.remove_admin
+    alumnus.is_admin.should be_false
   end
 
 end

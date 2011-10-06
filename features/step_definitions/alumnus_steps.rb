@@ -13,9 +13,21 @@ Given /^the following alumni exist in the system:$/ do |alumni_table|
 end
 
 When /^I search using "([^"]*)"$/ do |search_term|
-    @search_result = Alumnus.doSearch(search_term)
+    @search_result = Alumnus.do_search(search_term)
 end
 
 Then /^I should get ([0-9]+) result$/ do |count|
     @search_result.length.should == count.to_i
+end
+
+When /^I authenticate using "([^"]*)" and password "([^"]*)"$/ do |email, pwd|
+  @alum = Alumnus.authenticate(email, pwd)
+end
+
+Then /^I should get user ([a-zA-z]+)$/ do |last_name|
+  if last_name != "nil"
+     @alum.last_name == last_name
+  else
+    @alum.nil?
+  end
 end

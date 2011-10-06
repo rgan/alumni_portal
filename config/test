@@ -1,0 +1,6 @@
+task :setup do
+  set :user, "ubuntu"
+  # scp -i ~/my-ec2-keypair ~/.ssh/id_rsa.pub root@xxx.amazonaws.com:/root/.ssh/authorized_keys2
+  ssh_options[:keys] = [File.join(ENV["HOME"], ".ssh", "id_rsa")]
+
+end

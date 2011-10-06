@@ -12,6 +12,8 @@
 <div id="form">
     <p data-bind="text:error_message" class="errors"></p>
 
+    <p>Email:<input size=40 data-bind="value: model.email"></span></p>
+
     <p>First name:<input size=40 data-bind="value: model.first_name"></span></p>
 
     <p>Last name:<input size=40 data-bind="value: model.last_name"></span></p>
@@ -70,6 +72,7 @@
 
 <script type="text/javascript">
     var alumnus = {
+        email : ko.observable(""),
         first_name : ko.observable(""),
         last_name : ko.observable(""),
         ug_college : ko.observable(""),
@@ -82,6 +85,7 @@
         },
         clear:
                 function() {
+                    this.email("");
                     this.first_name("");
                     this.last_name("");
                     this.ug_college("");

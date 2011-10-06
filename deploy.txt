@@ -1,0 +1,44 @@
+Ubuntu instructions:
+
+Ubuntu 8.04 LTS Hardy Server: ami-c4f615ad
+
+ec2-run-instances ami-c4f615ad -instance-type m1.small -k <keypair>
+
+ec2-describe-instances
+
+ec2-authorize default -p 22
+
+ssh -i <keypair> root@ec2-50-16-129-99.compute-1.amazonaws.com
+
+ec2-terminate-instances i-0bcfa06a
+
+
+1. Install GIT: sudo apt-get install git-core
+
+2. Ruby from source:
+       mkdir ruby-src && cd ruby-src
+       wget ftp://ftp.ruby-lang.org//pub/ruby/1.8/ruby-1.8.7-p334.tar.gz
+       tar -zxvf ruby-1.8.7-p334.tar.gz && cd ruby-1.8.7-p334
+       ./configure
+       make && sudo make install
+
+3. RubyGems:
+$ wget http://production.cf.rubygems.org/rubygems/rubygems-1.7.2.tgz
+$ tar xvfz rubygems-1.7.2.tgz
+$ cd rubygems-1.7.2
+$ sudo ruby setup.rb
+$ sudo gem update --system
+
+4. JAVA: apt-get install sun-java6-jdk
+
+5. APACHE: sudo apt-get install apache2 apache2-mpm-prefork apache2-prefork-dev
+
+6. gem install passenger  --no-ri --no-rdoc (apt-get install libcurl4-openssl-dev)
+
+7. passenger-install-apache2-module
+
+8. gem install bundler --no-ri --no-rdoc
+
+9. Mongo db: http://fastdl.mongodb.org/linux/mongodb-linux-i686-1.8.2.tgz
+
+10. cap production deploy
