@@ -12,7 +12,7 @@
 
 <div id="main">
   <div align="right" id="logout" data-bind="visible: showSearch">
-    <%=@user.first_name%> is logged in <button data-bind="click: logout">Logout</button>
+    <span data-bind="text:username"></span> is logged in <button data-bind="click: logout">Logout</button>
   </div>
   <div id="login" data-bind="visible: showLogin">
     <h3>Sign in</h3>
@@ -73,6 +73,7 @@
   <table class="searchresults" width="100%">
     <tr>
       <td data-bind="visible: shouldAllowAdmin">Admin?</td>
+      <td data-bind="visible: shouldAllowAdmin">Delete</td>
       <td>First Name</td>
       <td>Last Name</td>
       <td>Specialty</td>
@@ -84,7 +85,8 @@
     </tr>
     {{each alumni}}
     <tr>
-      <td data-bind="visible: shouldAllowAdmin"><input type="checkbox"></td>
+      <td data-bind="visible: shouldAllowAdmin"><input type="checkbox" data-bind="click: makeAdmin"></td>
+      <td data-bind="visible: shouldAllowAdmin"><button data-bind="click: deleteAlumnus">Delete</button></td>
       <td>${first_name}</td>
       <td>${last_name}</td>
       <td>${specialty}</td>
@@ -129,12 +131,13 @@
     var viewModel = {
         model : alumnus,
         alumni: ko.observableArray([]),
-        shouldAllowAdmin: ko.observable(false),
+        shouldAllowAdmin: ko.observable(<%=@is_admin%>),
         email: ko.observable(""),
         password: ko.observable(""),
         showLogin: ko.observable(<%=@user.nil?%>),
         showRegistration: ko.observable(false),
         showSearch: ko.observable(<%=!@user.nil?%>),
+        username: ko.observable("<%=@username%>"),
         error_message: ko.observable(""),
         addAlumnus: function() {
             $.ajax({
@@ -145,8 +148,8 @@
                 success: function(result) {
                     viewModel.model.clear();
                     viewModel.error_message("");
-                    viewModel.showRegistration("false");
-                    viewModel.showSearch("true");
+                    viewModel.showRegistration(false);
+                    viewModel.showSearch(true);
                 },
                 error: function(jQxhr) {
                     viewModel.error_message(jQxhr.responseText)
@@ -186,6 +189,8 @@
             }),
             //contentType: "application/json",
             success: function(result) {
+                viewModel.username(result.first_name);
+                viewModel.shouldAllowAdmin(result.admin);
                 viewModel.error_message("");
                 viewModel.showLogin(false);
                 viewModel.showSearch(true);

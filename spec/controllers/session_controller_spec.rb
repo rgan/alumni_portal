@@ -23,5 +23,6 @@ describe SessionsController do
     session[:user_id] = 1
     post :destroy, :id => 1
     session[:user_id].should be_nil
+    cookies[SessionsController::COOKIE_KEY].should be_nil
   end
 end
