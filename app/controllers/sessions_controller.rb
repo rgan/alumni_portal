@@ -18,5 +18,6 @@ class SessionsController < ApplicationController
 
   def destroy
     session[:user_id] = nil
+    respond_with("")
   end
 end

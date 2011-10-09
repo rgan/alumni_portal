@@ -11,6 +11,9 @@
 
 
 <div id="main">
+  <div align="right" id="logout" data-bind="visible: showSearch">
+    <%=@user.first_name%> is logged in <button data-bind="click: logout">Logout</button>
+  </div>
   <div id="login" data-bind="visible: showLogin">
     <h3>Sign in</h3>
 
@@ -189,6 +192,21 @@
             },
             error: function() {
                 viewModel.error_message("Email or password is not correct")
+            }
+        });
+    };
+
+    viewModel.logout = function() {
+        $.ajax({
+            url: "/sessions/1.json",
+            type: "delete",
+            success: function(result) {
+                viewModel.error_message("");
+                viewModel.showLogin(true);
+                viewModel.showSearch(false);
+            },
+            error: function(jQxhr) {
+                viewModel.error_message(jQxhr.responseText)
             }
         });
     };
