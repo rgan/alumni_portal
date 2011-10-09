@@ -1,0 +1,205 @@
+<head>
+  <script type="text/javascript" src="javascripts/jquery-1.6.2.min.js"></script>
+  <script type="text/javascript" src="javascripts/jquery.tmpl.js"></script>
+  <script type="text/javascript" src="javascripts/knockout-1.2.1.js"></script>
+  <script type="text/javascript" src="javascripts/specialities.js"></script>
+  <script type="text/javascript" src="javascripts/countries.js"></script>
+  <link rel="stylesheet" type="text/css" href="stylesheets/alumni_portal.css"/>
+</head>
+<body>
+<h2>Alumni Portal</h2>
+
+
+<div id="main">
+  <div id="login" data-bind="visible: showLogin">
+    <h3>Sign in</h3>
+
+    <p data-bind="text:error_message" class="errors"></p>
+
+    <p>Email:<input size=40 data-bind="value: email"></p>
+
+    <p>Password:<input type=password size=40 data-bind="value: password"></p>
+    <button data-bind="click: login">Login</button>
+    <p>Don't have an account?
+      <button data-bind="click: show_registration">Register</button>
+    </p>
+  </div>
+
+  <div id="registration" data-bind="visible: showRegistration">
+    <h3>Register</h3>
+
+    <p data-bind="text:error_message" class="errors"></p>
+
+    <p>Email:<input size=40 data-bind="value: model.email"></p>
+
+    <p>Password:<input type=password size=40 data-bind="value: model.password"></p>
+
+    <p>First name:<input size=40 data-bind="value: model.first_name"></p>
+
+    <p>Last name:<input size=40 data-bind="value: model.last_name"></p>
+
+    <p>UG college:<input size=40 data-bind="value: model.ug_college"></p>
+
+    <p>PG college:<input size=40 data-bind="value: model.pg_college"></p>
+
+    <p>Speciality:
+      <select data-bind="options:specialities, value: model.specialty"> </select>&nbsp;<span>Sub-Speciality:
+    <select height="5" data-bind="options:sub_specialities, value: model.sub_specialty"> </select></span></p>
+
+    <p>City:<input size=40 data-bind="value: model.address.city"></p>
+
+    <p>Country:
+      <select data-bind="options:countries, value: model.address.country"> </select></p>
+
+    <button data-bind="click: addAlumnus">Save</button>
+  </div>
+
+  <div id="search" data-bind="visible: showSearch">
+    Enter text to search for alumni:<input size="40" id="searchText">
+    <button data-bind="click:searchAlumni">Search</button>
+
+    <div data-bind="template: { name:'alumniTemplate'}">
+    </div>
+
+  </div>
+
+</div>
+
+<script id="alumniTemplate" type="text/html">
+  <h4>Results:</h4>
+  <table class="searchresults" width="100%">
+    <tr>
+      <td data-bind="visible: shouldAllowAdmin">Admin?</td>
+      <td>First Name</td>
+      <td>Last Name</td>
+      <td>Specialty</td>
+      <td>Sub specialty</td>
+      <td>City/Town</td>
+      <td>Country</td>
+      <td>UG College</td>
+      <td>PG College</td>
+    </tr>
+    {{each alumni}}
+    <tr>
+      <td data-bind="visible: shouldAllowAdmin"><input type="checkbox"></td>
+      <td>${first_name}</td>
+      <td>${last_name}</td>
+      <td>${specialty}</td>
+      <td>${sub_specialty}</td>
+      <td>${address.city}</td>
+      <td>${address.country}</td>
+      <td>${ug_college}</td>
+      <td>${pg_college}</td>
+    </tr>
+    {{/each}}
+  </table>
+</script>
+
+<script type="text/javascript">
+    var alumnus = {
+        email : ko.observable(""),
+        password : ko.observable(""),
+        first_name : ko.observable(""),
+        last_name : ko.observable(""),
+        ug_college : ko.observable(""),
+        pg_college : ko.observable(""),
+        specialty : ko.observable(""),
+        sub_specialty : ko.observable(""),
+        address: {
+            city: ko.observable(""),
+            country: ko.observable("")
+        },
+        clear:
+                function() {
+                    this.email("");
+                    this.password("");
+                    this.first_name("");
+                    this.last_name("");
+                    this.ug_college("");
+                    this.pg_college("");
+                    this.specialty("");
+                    this.address.city("");
+                    this.address.country();
+                }
+    }
+
+    var viewModel = {
+        model : alumnus,
+        alumni: ko.observableArray([]),
+        shouldAllowAdmin: ko.observable(false),
+        email: ko.observable(""),
+        password: ko.observable(""),
+        showLogin: ko.observable(<%=@user.nil?%>),
+        showRegistration: ko.observable(false),
+        showSearch: ko.observable(<%=!@user.nil?%>),
+        error_message: ko.observable(""),
+        addAlumnus: function() {
+            $.ajax({
+                url: "alumni.json",
+                type: "post",
+                data: ko.utils.stringifyJson({ "alumnus" : JSON.parse(ko.toJSON(this.model)) }), // this is needed because ko.toJS() does not seem to work
+                contentType: "application/json",
+                success: function(result) {
+                    viewModel.model.clear();
+                    viewModel.error_message("");
+                    viewModel.showRegistration("false");
+                    viewModel.showSearch("true");
+                },
+                error: function(jQxhr) {
+                    viewModel.error_message(jQxhr.responseText)
+                }
+            });
+        }
+    };
+
+    viewModel.specialities = ko.observableArray(getSpecialties());
+
+    viewModel.sub_specialities = ko.dependentObservable(function() {
+                return getSubSpecialities(this.model.specialty())
+            },
+            viewModel);
+
+    viewModel.searchAlumni = function() {
+        viewModel.alumni.removeAll()
+        $.ajax({
+            url: "/alumni/search/" + $("input[id='searchText']").val() + ".json",
+            type: "get",
+            contentType: "application/json",
+            success: function(result) {
+                result.forEach(function(item) {
+                    viewModel.alumni.push(item);
+                });
+            }
+        });
+    };
+
+    viewModel.login = function() {
+        $.ajax({
+            url: "/sessions.json",
+            type: "post",
+            data: ({
+                "email" : viewModel.email,
+                "password" : viewModel.password
+            }),
+            //contentType: "application/json",
+            success: function(result) {
+                viewModel.error_message("");
+                viewModel.showLogin(false);
+                viewModel.showSearch(true);
+            },
+            error: function() {
+                viewModel.error_message("Email or password is not correct")
+            }
+        });
+    };
+
+    viewModel.show_registration = function() {
+        viewModel.showLogin(false);
+        viewModel.showSearch(false);
+        viewModel.showRegistration(true);
+    };
+
+    ko.applyBindings(viewModel, $("#main")[0]);
+
+</script>
+</body>
