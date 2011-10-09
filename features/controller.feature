@@ -6,6 +6,7 @@ Feature: Create a new alumnus using json
 		 "first_name": "John",
 		 "last_name": "Doe",
 		 "email" : "foo@foo.com",
+		 "password" : "foobar",
 		 "ug_college": "CMC Vellore",
 		 "pg_college": "Loma Linda",
 		 "specialty" : "Internal medicine",
@@ -17,7 +18,6 @@ Feature: Create a new alumnus using json
 		{
 		 "first_name": "John",
 		 "last_name": "Doe",
-		 "email" : "foo@foo.com",
 		 "ug_college": "CMC Vellore",
 		 "pg_college": "Loma Linda",
 		 "specialty" : "Internal medicine",
@@ -31,6 +31,7 @@ Feature: Create a new alumnus using json
 		 "first_name": "John",
 		 "last_name": "Doe",
 		 "email" : "foo@foo.com",
+		 "password" : "foobar",
 		 "ug_college": "CMC Vellore",
 		 "pg_college": "Loma Linda",
 		 "specialty" : "Internal medicine"
@@ -42,7 +43,6 @@ Feature: Create a new alumnus using json
 		[{
 		 "first_name": "John",
 		 "last_name": "Doe",
-		 "email" : "foo@foo.com",
 		 "ug_college": "CMC Vellore",
 		 "pg_college": "Loma Linda",
 		 "specialty" : "Internal medicine"
