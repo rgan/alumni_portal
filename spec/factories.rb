@@ -11,6 +11,7 @@ FactoryGirl.define do
     pg_college "pg"
     specialty "surgery"
     email "foo@foo.com"
+    password "foobar"
     address { Factory.build(:address) }
     admin false
   end

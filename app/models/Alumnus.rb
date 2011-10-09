@@ -28,6 +28,7 @@ class Alumnus
   validates_format_of :first_name, :last_name, :ug_college, :pg_college, :specialty, :with => /[A-Za-z]/
   validates_length_of :first_name, :last_name, :ug_college, :pg_college, :specialty, :minimum => 1, :maximum => 100
   validates_length_of :maiden_name, :sub_specialty, :maximum => 100
+  validates_length_of :password, :minimum => 6, :maximum => 12
   validates_associated :address
 
   before_save :encrypt_password
