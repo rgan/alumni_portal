@@ -1,16 +1,12 @@
 class AdminController < ApplicationController
   before_filter :administrators_only
 
-  def create
+  def toggle
     @alumnus = Alumnus.find(params[:alumnus_id])
-    @alumnus.make_admin if @alumnus
-    respond_with(@alumnus)
-  end
-
-  def delete
-    @alumnus = Alumnus.find(params[:alumnus_id])
-    @alumnus.remove_admin if @alumnus
-    respond_with(@alumnus)
+    raise "Invalid alumnus id" if @alumnus.nil?
+    @alumnus.toggle_admin
+    @alumnus.save
+    respond_with(@alumnus, ALUMNI_OPTIONS)
   end
 
   private
@@ -21,6 +17,7 @@ class AdminController < ApplicationController
   end
 
   def user_from_session
-    session[:user_id] ? Alumnus.find(session[:user_id]) : nil
+    user_id = cookies[SessionsController::COOKIE_KEY]
+    user_id ? Alumnus.find(user_id) : nil
   end
 end

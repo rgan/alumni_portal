@@ -28,7 +28,7 @@ class Alumnus
   validates_format_of :first_name, :last_name, :ug_college, :pg_college, :specialty, :with => /[A-Za-z]/
   validates_length_of :first_name, :last_name, :ug_college, :pg_college, :specialty, :minimum => 1, :maximum => 100
   validates_length_of :maiden_name, :sub_specialty, :maximum => 100
-  validates_length_of :password, :minimum => 6, :maximum => 12
+  validates_length_of :password, :minimum => 6, :maximum => 12, :if => :new?
   validates_associated :address
 
   before_save :encrypt_password
@@ -43,6 +43,14 @@ class Alumnus
   def self.authenticate(email, pwd)
     @alumnus = Alumnus.find(:all, :conditions => { :email => email }).first
     @alumnus.encrypted_password == encrypt(pwd, @alumnus.salt) ? @alumnus : nil
+  end
+
+  def toggle_admin()
+    if self.is_admin
+       self.remove_admin
+    else
+      self.make_admin
+    end
   end
 
   def make_admin()

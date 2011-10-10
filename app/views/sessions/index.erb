@@ -12,7 +12,8 @@
 
 <div id="main">
   <div align="right" id="logout" data-bind="visible: showSearch">
-    <span data-bind="text:username"></span> is logged in <button data-bind="click: logout">Logout</button>
+    <span data-bind="text:username"></span> is logged in
+    <button data-bind="click: logout">Logout</button>
   </div>
   <div id="login" data-bind="visible: showLogin">
     <h3>Sign in</h3>
@@ -85,8 +86,12 @@
     </tr>
     {{each alumni}}
     <tr>
-      <td data-bind="visible: shouldAllowAdmin"><input type="checkbox" data-bind="click: function() { viewModel.toggleAdmin($value)}"></td>
-      <td data-bind="visible: shouldAllowAdmin"><button data-bind="click: function() { viewModel.deleteAlumnus($value)}">Delete</button></td>
+      <td data-bind="visible: shouldAllowAdmin">
+        <input type="checkbox" data-bind="checked: $value.admin, click: function() { viewModel.toggleAdmin($value)}">
+      </td>
+      <td data-bind="visible: shouldAllowAdmin">
+        <button data-bind="click: function() { viewModel.deleteAlumnus($value)}">Delete</button>
+      </td>
       <td>${first_name}</td>
       <td>${last_name}</td>
       <td>${specialty}</td>
@@ -149,7 +154,8 @@
                     viewModel.model.clear();
                     viewModel.error_message("");
                     viewModel.showRegistration(false);
-                    viewModel.showSearch(true);
+                    viewModel.showSearch(false);
+                    viewModel.showLogin(true);
                 },
                 error: function(jQxhr) {
                     viewModel.error_message(jQxhr.responseText)
@@ -207,6 +213,7 @@
             type: "delete",
             success: function(result) {
                 viewModel.error_message("");
+                viewModel.alumni.removeAll();
                 viewModel.showLogin(true);
                 viewModel.showSearch(false);
             },
@@ -216,8 +223,20 @@
         });
     };
 
-    viewModel.toggleAdmin = function() {
-
+    viewModel.toggleAdmin = function(alumnus) {
+        $.ajax({
+            url: "/toggle_admin/" + alumnus._id + ".json",
+            type: "post",
+            contentType: "application/json",
+            success: function(result) {
+                viewModel.error_message("");
+                alumnus.admin = true;
+            },
+            error: function(jQxhr) {
+                alert("error")
+                viewModel.error_message(jQxhr.responseText)
+            }
+        });
     };
 
     viewModel.deleteAlumnus = function(alumnus) {

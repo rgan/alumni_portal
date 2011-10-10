@@ -2,8 +2,7 @@ AlumniPortal::Application.routes.draw do
 
   resources :alumni, :sessions
   match 'alumni/search/:search_text', :to => 'alumni#search'
-  match 'make_admin' => 'admin#create', :via => :post
-  match 'remove_admin' => 'admin#delete', :via => :post
+  match 'toggle_admin/:alumnus_id' => 'admin#toggle', :via => :post
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
