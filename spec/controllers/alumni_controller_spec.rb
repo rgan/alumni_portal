@@ -20,4 +20,12 @@ describe AlumniController do
     get :search, :search_text => 'search_text'
   end
 
+  it "should invoke delete on model" do
+    Alumnus.should_receive(:find).with(1).and_return(@mock_alumnus)
+    @mock_alumnus.should_receive(:delete)
+    Sunspot.should_receive(:remove).with(@mock_alumnus)
+    Sunspot.should_receive(:commit)
+    post :destroy, :id => 1
+  end
+
 end

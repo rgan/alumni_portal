@@ -13,4 +13,12 @@ class AlumniController < ApplicationController
     respond_with(@result, OPTIONS)
   end
 
+  def destroy
+    alumnus = Alumnus.find(params[:id])
+    alumnus.delete
+    Sunspot.remove(alumnus)
+    Sunspot.commit
+    respond_with("")
+  end
+
 end
