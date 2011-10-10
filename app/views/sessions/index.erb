@@ -230,10 +230,10 @@
             contentType: "application/json",
             success: function(result) {
                 viewModel.error_message("");
-                alumnus.admin = true;
+                index = viewModel.alumni.indexOf(alumnus)
+                viewModel.alumni.splice(index,1,result)
             },
             error: function(jQxhr) {
-                alert("error")
                 viewModel.error_message(jQxhr.responseText)
             }
         });
